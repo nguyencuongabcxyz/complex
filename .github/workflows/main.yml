@@ -1,0 +1,45 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  run_unit_test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout codes
+      uses: actions/checkout@v3
+    - name: Build test docker image
+      run: docker build . --file ./client/Dockerfile.dev --tag nguyenc123/react-test
+    - name: Run test
+      run: docker run -e CI=true nguyenc123/react-test npm run test
+      
+  build_docker_images:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout codes
+      uses: actions/checkout@v3
+    - name: Build client docker image
+      run: docker build . --file ./client --tag nguyenc123/multi-client
+    - name: Build nginx docker image
+      run: docker build . --file ./nginx --tag nguyenc123/multi-nginx
+    - name: Build server docker image
+      run: docker build . --file ./server --tag nguyenc123/multi-server
+    - name: Build worker docker image
+      run: docker build . --file ./worker --tag nguyenc123/multi-worker
+    - name: Login docker hub
+      run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+    - name: Publish client
+      run: docker push nguyenc123/multi-client
+    - name: Publish nginx
+      run: docker push nguyenc123/multi-nginx
+    - name: Publish server
+      run: docker push nguyenc123/multi-server
+    - name: Publish worker
+      run: docker push nguyenc123/multi-worker
