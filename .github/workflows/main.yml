@@ -19,13 +19,13 @@ jobs:
     - name: Run test
       run: docker run -e CI=true nguyenc123/react-test npm run test
     - name: Build client docker image
-      run: docker build ./client --file ./client --tag nguyenc123/multi-client
+      run: docker build ./client --tag nguyenc123/multi-client
     - name: Build nginx docker image
-      run: docker build ./nginx --file ./nginx --tag nguyenc123/multi-nginx
+      run: docker build ./nginx --tag nguyenc123/multi-nginx
     - name: Build server docker image
-      run: docker build ./server --file ./server --tag nguyenc123/multi-server
+      run: docker build ./server --tag nguyenc123/multi-server
     - name: Build worker docker image
-      run: docker build ./worker --file ./worker --tag nguyenc123/multi-worker
+      run: docker build ./worker --tag nguyenc123/multi-worker
     - name: Login docker hub
       run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
     - name: Publish client
